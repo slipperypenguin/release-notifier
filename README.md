@@ -3,7 +3,7 @@
 
 🛰 slack notifications for OSS releases
 
-Receive slack notifications for specified github releases. Better than the vanilla RSS notifier
+Receive slack notifications for specified GitHub releases. Better than the vanilla RSS notifier
 
 
 ## Getting setup
@@ -14,7 +14,14 @@ Receive slack notifications for specified github releases. Better than the vanil
 **Watching repositories**
 - Track repositories by adding them to the list of armuments:
   - `-r=golang/go -r=kubernetes/kubernetes` etc...
-  
+
+
+**Running Locally**
+```go
+go build
+./release-tracker
+```
+
 ## Deployment
 **Kubernetes + Helm**
 

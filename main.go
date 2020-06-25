@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"flag"
+	"fmt"
 	"github.com/joho/godotenv"
 	githubql "github.com/shurcooL/githubql"
 	"github.com/spf13/pflag"
@@ -11,6 +11,7 @@ import (
 	"go.uber.org/zap"
 	"golang.org/x/oauth2"
 	"log"
+	"os"
 	"time"
 )
 
@@ -38,6 +39,11 @@ func init() {
 }
 
 func main() {
+	c := Config{
+		Interval: time.Hour,
+		LogLevel: "info",
+	}
+
 	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
 	// default is to watch kubernetes/kubernetes repo
 	pflag.StringP("repo", "r", "kubernetes/kubernetes", "repository to check")
@@ -45,13 +51,21 @@ func main() {
 	if err := viper.BindPFlags(pflag.CommandLine); err != nil {
 		panic(err)
 	}
+	c.Repositories = viper.GetStringSlice("repo")
 
-	c := Config{
-		Interval: time.Hour,
-		LogLevel: "info",
+	ghtok, exists := os.LookupEnv("GITHUB_TOKEN")
+	if exists {
+		fmt.Println("$GITHUB_TOKEN found in local .env 🚧")
+		c.GithubToken = ghtok
 	}
 
-	logger, _ := zap.NewProduction()
+	shook, exists := os.LookupEnv("SLACK_HOOK")
+	if exists {
+		fmt.Println("$SLACK_HOOK found in local .env 🚧")
+		c.SlackHook = shook
+	}
+
+	logger, _ := zap.NewDevelopment()
 	defer logger.Sync()
 	sugar := logger.Sugar()
 
