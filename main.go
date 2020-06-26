@@ -57,6 +57,7 @@ func main() {
 	if exists {
 		fmt.Println("$GITHUB_TOKEN found in local .env 🚧")
 		c.GithubToken = ghtok
+		c.Interval = time.Minute
 	}
 
 	shook, exists := os.LookupEnv("SLACK_HOOK")
