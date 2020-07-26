@@ -1,4 +1,4 @@
-# release-tracker
+# release-notifier
 [WIP]
 
 🛰 slack notifications for OSS releases
@@ -19,7 +19,7 @@ Receive slack notifications for specified GitHub releases. Better than the vanil
 **Running Locally**
 ```go
 go build
-./release-tracker
+./release-notifier
 ```
 
 ## Deployment
@@ -27,14 +27,14 @@ go build
 
 Create a secret with the required credentials:
 ```shell script
-kubectl create secret generic release-tracker \
+kubectl create secret generic release-notifier \
         --from-literal=github=XXX` \
         --from-literal=slack=XXX
 ```
 You can then install the deployment through Helm:
 ```shell script
-cd release-tracker
-helm upgrade -i release-tracker
+cd release-notifier
+helm upgrade -i release-notifier
 ```
 
 

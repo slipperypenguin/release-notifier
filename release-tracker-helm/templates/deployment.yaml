@@ -2,7 +2,13 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Chart.Name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Chart.Name }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
   replicas: {{ .Values.replicaCount }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   template:
@@ -13,7 +19,7 @@ spec:
       restartPolicy: Always
       containers:
         - name: {{ .Chart.Name }}
-          image: {{ .Values.image.repository }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           env:
             - name: GITHUB_TOKEN
               valueFrom:
@@ -26,7 +32,7 @@ spec:
                   name: {{ .Chart.Name }}
                   key: slack
           command:
-            - '/bin/release-tracker'
+            - '/bin/release-notifier'
           args:
             - '-r=golang/go'
             - '-r=helm/helm'

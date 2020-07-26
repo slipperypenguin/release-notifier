@@ -1,4 +1,4 @@
-module github.com/slipperypenguin/release-tracker
+module github.com/slipperypenguin/release-notifier
 
 go 1.14
 

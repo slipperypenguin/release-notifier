@@ -22,9 +22,9 @@ type slackPayload struct {
 }
 
 // Send a notification with a formatted message build from the repository.
-func (s *SlackSender) Send(repo Repository) error  {
+func (s *SlackSender) Send(repo Repository) error {
 	payload := slackPayload{
-		Username: "GitHub Releases",
+		Username:  "GitHub Releases",
 		IconEmoji: ":octocat:",
 		Text: fmt.Sprintf(
 			"<%s|%s/%s>: <%s|%s> released",
@@ -33,7 +33,7 @@ func (s *SlackSender) Send(repo Repository) error  {
 			repo.Name,
 			repo.Release.URL.String(),
 			repo.Release.Name,
-			),
+		),
 	}
 
 	payloadData, err := json.Marshal(payload)

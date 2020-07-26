@@ -1,6 +1,6 @@
 DIST := dist
 BIN := bin
-EXECUTABLE := release-tracker
+EXECUTABLE := release-notifier
 
 PWD := $(shell pwd)
 VERSION := $(shell cat VERSION)

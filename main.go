@@ -19,7 +19,6 @@ import (
 type Config struct {
 	GithubToken     string        `arg:"env:GITHUB_TOKEN"`
 	Interval        time.Duration `arg:"env:INTERVAL"`
-	LogLevel        string        `arg:"env:LOG_LEVEL"`
 	Repositories    []string      `arg:"-r,separate"`
 	SlackHook       string        `arg:"env:SLACK_HOOK"`
 	IgnoreNonstable bool          `arg:"env:IGNORE_NONSTABLE"`
@@ -30,40 +29,35 @@ func (c Config) Token() *oauth2.Token {
 	return &oauth2.Token{AccessToken: c.GithubToken}
 }
 
-// init is invoked before main()
-func init() {
-	// loads values from .env into the system
-	if err := godotenv.Load(); err != nil {
-		fmt.Println("No .env file found...")
-	}
-}
-
 func main() {
+	_ = godotenv.Load()
+
 	c := Config{
-		Interval: time.Hour,
-		LogLevel: "info",
+		Interval:        time.Hour,
+		IgnoreNonstable: true,
 	}
 
 	pflag.CommandLine.AddGoFlagSet(flag.CommandLine)
-	// default is to watch kubernetes/kubernetes repo
-	pflag.StringP("repo", "r", "kubernetes/kubernetes", "repository to check")
+	pflag.StringSliceP("repo", "r", []string{""}, "repository to check")
 	pflag.Parse()
 	if err := viper.BindPFlags(pflag.CommandLine); err != nil {
 		panic(err)
 	}
 	c.Repositories = viper.GetStringSlice("repo")
+	if len(c.Repositories) == 0 {
+		log.Fatalf("no repositories to watch")
+	}
 
 	ghtok, exists := os.LookupEnv("GITHUB_TOKEN")
 	if exists {
-		fmt.Println("$GITHUB_TOKEN found in local .env 🚧")
 		c.GithubToken = ghtok
-		c.Interval = time.Minute
+		// c.Interval = time.Minute
+		fmt.Println("github credential loaded")
 	}
-
 	shook, exists := os.LookupEnv("SLACK_HOOK")
 	if exists {
-		fmt.Println("$SLACK_HOOK found in local .env 🚧")
 		c.SlackHook = shook
+		fmt.Println("slack credential loaded")
 	}
 
 	logger, _ := zap.NewDevelopment()
@@ -89,14 +83,12 @@ func main() {
 	sugar.Infow("waiting for new releases")
 	for repo := range releases {
 		if c.IgnoreNonstable && repo.Release.IsNonstable() {
-			// log.Printf("not notifying about non-stable version: %v", repo.Release.Name)
 			sugar.Infow("not notifying about non-stable version.",
 				"version", repo.Release.Name,
 			)
 			continue
 		}
 		if err := slack.Send(repo); err != nil {
-			// log.Printf("failed to send release to messenger. %+v", err)
 			sugar.Errorf("failed to send release to messenger. %+v", err)
 			sugar.Warnw(
 				"failed to send release to messenger.",
