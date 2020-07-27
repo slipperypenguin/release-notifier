@@ -1,6 +1,4 @@
 # release-notifier
-[WIP]
-
 🛰 slack notifications for OSS releases
 
 Receive slack notifications for specified GitHub releases. Better than the vanilla RSS notifier
@@ -18,23 +16,36 @@ Receive slack notifications for specified GitHub releases. Better than the vanil
 
 **Running Locally**
 ```go
-go build
+go build -mod=vendor
 ./release-notifier
 ```
 
 ## Deployment
-**Kubernetes + Helm**
-
-Create a secret with the required credentials:
-```shell script
-kubectl create secret generic release-notifier \
-        --from-literal=github=XXX` \
-        --from-literal=slack=XXX
+### **Building + pushing locally**
+General
 ```
-You can then install the deployment through Helm:
+$ docker build -t docker.pkg.github.com/slipperypenguin/release-notifier/release-notifier:v0.1.X .
+$ docker images
+$ docker push docker.pkg.github.com/slipperypenguin/release-notifier/release-notifier:v0.1.X
+```
+
+Example ARM
+```
+$ docker build -f DockerfileARM -t docker.pkg.github.com/slipperypenguin/release-notifier/release-notifier:v0.1.2 .
+$ docker images
+$ docker push docker.pkg.github.com/slipperypenguin/release-notifier/release-notifier:v0.1.2
+```
+
+
+### **Kubernetes + Helm**
+Populate the `values.yaml` file with the required `slack` and `github` credentials. This normally should be handled by a CI tool such as Jenkins or Travis. If these keys are manually added to `values.yaml`, make sure they are not committed.
+
+You can then install the deployment through Helm.
+
+Create a deployment + secret with the required credentials:
 ```shell script
-cd release-notifier
-helm upgrade -i release-notifier
+cd deployment
+helm upgrade -i release-notifier ./release-notifier --dry-run
 ```
 
 

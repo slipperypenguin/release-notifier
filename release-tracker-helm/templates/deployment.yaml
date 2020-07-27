@@ -34,9 +34,9 @@ spec:
           command:
             - '/bin/release-notifier'
           args:
-            - '-r=golang/go'
             - '-r=helm/helm'
             - '-r=kubernetes/kubernetes'
+            - 'r=rancher/k3s'
           resources:
             limits:
               cpu: {{ .Values.resources.limits.cpu }}
