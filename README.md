@@ -44,7 +44,7 @@ You can then install the deployment through Helm.
 
 Create a deployment + secret with the required credentials:
 ```shell script
-cd deployment
+cd helm
 helm upgrade -i release-notifier ./release-notifier --dry-run
 ```
 
