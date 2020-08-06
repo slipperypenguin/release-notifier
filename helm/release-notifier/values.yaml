@@ -1,8 +1,8 @@
 replicaCount: 1
 image:
-  repository: docker.pkg.github.com/slipperypenguin/release-notifier/release-notifier
+  repository: containers.pkg.github.com/slipperypenguin/release-notifier/release-notifier
   digest: sha256:1234
-  tag: v0.1.2
+  tag: v0.1.3
 service:
   type: ClusterIP
   port: 80

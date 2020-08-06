@@ -24,21 +24,21 @@ go build -mod=vendor
 ### **Building + pushing locally**
 General
 ```
-$ docker build -t docker.pkg.github.com/slipperypenguin/release-notifier/release-notifier:v0.1.X .
+$ docker build -t docker.pkg.github.com/USERNAME/REPO/IMAGE:v0.1.X .
 $ docker images
-$ docker push docker.pkg.github.com/slipperypenguin/release-notifier/release-notifier:v0.1.X
+$ docker push docker.pkg.github.com/USERNAME/REPO/IMAGE:v0.1.X
 ```
 
 Example ARM
 ```
-$ docker build -f DockerfileARM -t docker.pkg.github.com/slipperypenguin/release-notifier/release-notifier:v0.1.2 .
+$ docker build -f DockerfileARM -t containers.pkg.github.com/slipperypenguin/release-notifier/release-notifier:v0.1.3 .
 $ docker images
-$ docker push docker.pkg.github.com/slipperypenguin/release-notifier/release-notifier:v0.1.2
+$ docker push containers.pkg.github.com/slipperypenguin/release-notifier/release-notifier:v0.1.3
 ```
 
 
 ### **Kubernetes + Helm**
-Populate the `values.yaml` file with the required `slack` and `github` credentials. This normally should be handled by a CI tool such as Jenkins or Travis. If these keys are manually added to `values.yaml`, make sure they are not committed.
+Populate the `values.yaml` file with the required `slack` and `github` credentials. This should be handled by a CI tool such as GH actions, Jenkins or Travis. If these keys are manually added to `values.yaml`, make sure they are not committed.
 
 You can then install the deployment through Helm.
 

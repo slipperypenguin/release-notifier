@@ -17,6 +17,8 @@ spec:
         app: {{ .Chart.Name }}
     spec:
       restartPolicy: Always
+      imagePullSecrets:
+        - name: dockerconfigjson-github-com
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -36,7 +38,10 @@ spec:
           args:
             - '-r=helm/helm'
             - '-r=kubernetes/kubernetes'
-            - 'r=rancher/k3s'
+            - '-r=rancher/k3s'
+            - '-r=monitoror/monitoror'
+            - '-r=home-assistant/core'
+            - '-r=vercel/hyper'
           resources:
             limits:
               cpu: {{ .Values.resources.limits.cpu }}
